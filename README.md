@@ -5,13 +5,14 @@
 
 </p>
 
-
-![alt text](http://127.0.0.1:8000//swagger-laravel.png)
+<a href="https://ibb.co/LdDJ5wQ"><img src="https://i.ibb.co/230sN28/swagger-laravel.png" alt="swagger-laravel" border="0" /></a>
 
 ## Installation
 
 please run below commands:
-
+```bash
+git clone https://github.com/mohamad-ashrafi/swagger-laravel.git
+```
 ```bash
 composer update Or composer install
 ```
