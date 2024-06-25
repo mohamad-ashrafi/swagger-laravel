@@ -1,0 +1,778 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Api Documentation",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api": {},
+        "/api/user/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Register a new user",
+                "operationId": "cf7da4e9f465af3d2496c970399c6882",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "username",
+                                    "country_code",
+                                    "mobile_number",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "username": {
+                                        "description": "uniq username without space and unexpected chars",
+                                        "type": "string"
+                                    },
+                                    "country_code": {
+                                        "description": "user country code without ziro. exp: 98",
+                                        "type": "integer"
+                                    },
+                                    "mobile_number": {
+                                        "description": "user mobile number with standard format without country_code and ziro. exp: 9102403100",
+                                        "type": "integer"
+                                    },
+                                    "password": {
+                                        "description": "8-30 char string password",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful registration",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "user": {
+                                            "$ref": "#/components/schemas/UserResource"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "send sms successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "خطای اعتبارسنجی فیلدها"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/api/user/verify-otp": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Verify OTP",
+                "description": "/**",
+                "operationId": "205dacae9ae40de43d0ec0468cd9b936",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "country_code",
+                                    "mobile_number",
+                                    "code"
+                                ],
+                                "properties": {
+                                    "country_code": {
+                                        "description": "user country code without ziro. exp: 98",
+                                        "type": "string"
+                                    },
+                                    "mobile_number": {
+                                        "description": "user mobile number with standard format without country_code and ziro. exp: 9102403100",
+                                        "type": "string"
+                                    },
+                                    "code": {
+                                        "description": "otp code received from sms",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OTP verified successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "user": {
+                                                    "$ref": "#/components/schemas/UserResource"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "Bearer token"
+                                        },
+                                        "expires_at": {
+                                            "type": "string",
+                                            "example": "2024-06-24 12:34:56"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Invalid OTP code",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid Code"
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "code": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "Invalid Code"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/api/user/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login user with mobile number",
+                "operationId": "046dca4b172e6aecf4b21a21fbb9d909",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "country_code",
+                                    "mobile_number"
+                                ],
+                                "properties": {
+                                    "country_code": {
+                                        "description": "Country code of the user",
+                                        "type": "string"
+                                    },
+                                    "mobile_number": {
+                                        "description": "Mobile number of the user",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User logged in successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "user": {
+                                            "$ref": "#/components/schemas/UserResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Invalid credentials",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid credentials"
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "credentials": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "Invalid mobile number or password"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/api/user/resend-otp": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Resend OTP code",
+                "operationId": "b34e4d783e7b886a7d6c83eb21fa6b3f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "country_code",
+                                    "mobile_number"
+                                ],
+                                "properties": {
+                                    "country_code": {
+                                        "description": "Country code of the user",
+                                        "type": "string"
+                                    },
+                                    "mobile_number": {
+                                        "description": "Mobile number of the user",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OTP resent successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "OTP has been resent successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Invalid credentials",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid credentials"
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "credentials": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "Invalid mobile number or country code"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/api/user/logout": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Logout the user",
+                "description": "Log the user out.",
+                "operationId": "b96a6adaebf3c55981b38fbb8521e61a",
+                "responses": {
+                    "200": {
+                        "description": "User logged out successfully"
+                    },
+                    "401": {
+                        "description": "Unauthorized - User not logged in"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/user": {
+            "get": {
+                "tags": [
+                    "Home"
+                ],
+                "summary": "Show All Posts with pagination in Home page",
+                "description": "Display a listing of the posts with pagination.",
+                "operationId": "6575d7ec2ddae8793e826748c43ade41",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of posts per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Post"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                }
+            }
+        },
+        "/api/user/post/create": {
+            "post": {
+                "tags": [
+                    "posts"
+                ],
+                "summary": "Create a new post",
+                "description": "Create New Post with Token.",
+                "operationId": "5c3ae80191b021c88c1a131009e4764a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "example": "New Post Title"
+                                    },
+                                    "body": {
+                                        "type": "string",
+                                        "example": "Content of the new post"
+                                    },
+                                    "like": {
+                                        "type": "integer",
+                                        "example": 0
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Post created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Post"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/user/post/{id}/like": {
+            "post": {
+                "tags": [
+                    "posts"
+                ],
+                "summary": "Increase likes of a post",
+                "description": "Increase likes of a post by post ID.",
+                "operationId": "615db20155538da65f2ba4334d2a748b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Post ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "like_count": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Likes updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Post"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Post not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/user/profile/show/{id}": {
+            "post": {
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "Get user by ID",
+                "description": "Display the specified user.",
+                "operationId": "d9ccb8b4cff41806cb4d58e895d0b0a2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Post ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/User"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "VerifyOtp": {
+                "properties": {
+                    "country_code": {
+                        "type": "string",
+                        "example": "98"
+                    },
+                    "mobile_number": {
+                        "type": "string",
+                        "example": "9123456789"
+                    },
+                    "code": {
+                        "type": "string",
+                        "example": "1234"
+                    }
+                },
+                "type": "object"
+            },
+            "Login": {
+                "properties": {
+                    "country_code": {
+                        "type": "string",
+                        "example": "98"
+                    },
+                    "mobile_number": {
+                        "type": "string",
+                        "example": "9123456789"
+                    }
+                },
+                "type": "object"
+            },
+            "ResendOtp": {
+                "properties": {
+                    "country_code": {
+                        "type": "string",
+                        "example": "98"
+                    },
+                    "mobile_number": {
+                        "type": "string",
+                        "example": "9123456789"
+                    }
+                },
+                "type": "object"
+            },
+            "UserResource": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "username": {
+                        "type": "string",
+                        "example": "john_doe"
+                    },
+                    "country_code": {
+                        "type": "string",
+                        "example": "98"
+                    },
+                    "mobile_number": {
+                        "type": "string",
+                        "example": "9123456789"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "12345678"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "example": "2024-06-24 12:34:56"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "example": "2024-06-24 12:34:56"
+                    }
+                },
+                "type": "object"
+            },
+            "Post": {
+                "title": "Post",
+                "required": [
+                    "user_id",
+                    "title",
+                    "body"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Post ID",
+                        "type": "integer"
+                    },
+                    "user_id": {
+                        "description": "User ID",
+                        "type": "integer"
+                    },
+                    "title": {
+                        "description": "Post title",
+                        "type": "string"
+                    },
+                    "body": {
+                        "description": "Post content",
+                        "type": "string"
+                    },
+                    "like": {
+                        "description": "Post Like",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "description": "Creation date",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Update date",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "User": {
+                "title": "User",
+                "required": [
+                    "username",
+                    "country_code",
+                    "mobile_number",
+                    "password"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "User ID",
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "username": {
+                        "description": "User Name",
+                        "type": "string",
+                        "example": "mohamad ashrafi"
+                    },
+                    "country_code": {
+                        "description": "User Country Code",
+                        "type": "integer",
+                        "example": "98"
+                    },
+                    "mobile_number": {
+                        "description": "User Phone Number",
+                        "type": "integer",
+                        "example": "9102403100"
+                    },
+                    "password": {
+                        "description": "User Password",
+                        "type": "integer",
+                        "example": "12345678"
+                    },
+                    "created_at": {
+                        "description": "Creation date",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Update date",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "description": "Use a Bearer token to access these endpoints",
+                "name": "Authorization",
+                "in": "header",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    }
+}
