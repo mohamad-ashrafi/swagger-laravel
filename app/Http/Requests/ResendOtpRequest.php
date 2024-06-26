@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class LoginRequest extends FormRequest
+class ResendOtpRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -34,8 +34,7 @@ class LoginRequest extends FormRequest
             'country_code.integer' => 'کد کشور باید عددی باشد',
 
             'mobile_number.required' => 'شماره تلفن ضروری است',
-            'mobile_number.regex' => 'شماره تلفن باید شامل 10 تا 15 رقم باشد و فرمت استاندارد',
+            'mobile_number.regex' => 'شماره تلفن باید شامل 10 تا 15 رقم باشد',
         ];
     }
-
 }

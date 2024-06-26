@@ -22,7 +22,8 @@ class VerifyOtpRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'mobile_number' => 'required|unique:users|regex:/^\d{10,15}$/',
+            'country_code' => 'required|integer',
+            'mobile_number' => 'required|regex:/^\d{10,15}$/',
             'code' => 'required|integer|max:4',
         ];
 
@@ -30,8 +31,10 @@ class VerifyOtpRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'country_code.required' => 'کد کشور ضروری است',
+            'country_code.integer' => 'کد کشور باید عددی باشد',
+
             'mobile_number.required' => 'شماره تلفن ضروری است',
-            'mobile_number.unique' => 'شماره تلفن قبلاً ثبت شده است',
             'mobile_number.regex' => 'شماره تلفن باید شامل 10 تا 15 رقم باشد',
 
             'code.required' => 'رمز پیامکی ضروری است',

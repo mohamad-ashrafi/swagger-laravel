@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\ResendOtpRequest;
+use App\Http\Requests\VerifyOtpRequest;
 use App\Http\Resources\UserResource;
 use App\Jobs\SendEmailJob;
 use App\Models\User;
@@ -170,7 +172,7 @@ class AuthController extends Controller
      *     @OA\Response(response=500, description="Server error")
      * )
      */
-    public function verifyOtp(Request $request)
+    public function verifyOtp(VerifyOtpRequest $request)
     {
         $user = User::all()->where('mobile_number', $request->mobile_number)
             ->where('country_code',$request->country_code)
@@ -255,7 +257,7 @@ class AuthController extends Controller
      *     @OA\Response(response=500, description="Server error")
      * )
      */
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
         $user = AuthService::login($request);
         if($user){
@@ -329,7 +331,7 @@ class AuthController extends Controller
      *     @OA\Response(response=500, description="Server error")
      * )
      */
-    public function resendOtp(Request $request)
+    public function resendOtp(ResendOtpRequest $request)
     {
         $credentials = $request->only('country_code', 'mobile_number');
         $user = User::where('mobile_number', $credentials['mobile_number'])
@@ -338,8 +340,8 @@ class AuthController extends Controller
 
         if ($user) {
             $otp = '1234';  // در اینجا باید از یک سرویس واقعی ارسال پیامک استفاده کنید
-            Cache::put("otp{$user->id}", $otp, now()->addMinutes(5));
             // event(new SmsOtp($otp, $credentials['country_code'] . $credentials['mobile_number']));
+            Cache::put("otp{$user->id}", $otp, now()->addMinutes(5));
 
             return response()->json([
                 'message' => 'OTP has been resent successfully'
